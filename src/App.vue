@@ -29,7 +29,8 @@
       <v-toolbar-title>Application</v-toolbar-title>
     </v-toolbar>
     <v-content>
-      
+      <!-- router 출력될 영역 -->
+      <router-view/>
     </v-content>
     <v-footer color="indigo" app>
       <span class="white--text">&copy; 2017</span>
