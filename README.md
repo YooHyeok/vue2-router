@@ -77,3 +77,44 @@ Vue 프로젝트를 생성할때 vue create 초기 설정시 라우터를 선택
     ```
     최초 랜더링 되는 Vue 인스턴스를 관리하는 main.js에서 router를 Vue인스턴스에 담아주고 있기 때문이다.  
     render 프로퍼티에 App.vue 컴포넌트가 등록되어있고, router 인스턴스를 함께 Object형태의 매개변수로 넘겨주고있다.
+
+# Lazy-Load와 WebpackChunkName & WebpackPrefecth
+router.js파일에 `which is lazy-loaded when the route is visited.`라는 주석이 있다.  
+기본적으로 Vue.js를 활용하여 만든 페이지는 싱글페이지 어플리케이션 이기 때문에 하나의 페이지에서 모든 작업이 일어난다.  
+기존의 index.html같은 파일들을 각각의 폴더에 넣어 놓고 그 폴더 경로대로 사용자가 찾아가는 방식이 아닌, 전체 컴포넌트(라우터에 연결된 컴포넌트 포함)를 다 불러온 뒤 주소창에 어떤 값이 입력되면 해당 값에 따라서 하나씩 사용자에게 출력하는 형태이다.  
+그렇기 때문에 최초에 전체 컴포넌트들을 다 불러온 뒤 라우터가 해당 컴포넌트들을 쥐고 있어야 한다.  
+이때 라우터가 해당 컴포넌트들을 쥐고 있는 과정(로딩)이 굉장히 오래걸린다.  
+- #### `webpackchunkName`: 청크(코드조각)의 이름을 정의하는 주석으로, 청크 파일의 이름을 설정한다. (default는 해시값)   어떤 값이 주소창에 입력되었을 때 이 값에 해당하는 컴포넌트의 내용만을 불러오겠다. 라는 의미로, 실제로 방문할 때만 컴포넌트를 로드하는 방식이다. 이것을 통해 초기 로드 시간과 대역폭 사용을 줄이는 데 도움을 준다.
+  ```js
+  export default new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [
+      {
+        path: '/',
+        name: 'home',
+        component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')
+      }
+    ]
+  })
+  ```
+  `/* webpackChunkName: "home" */` 와 같이 주석 형태로 작성해준다.
+  ```js
+  const About = () => {
+    return import(/* webpackChunkName: "home" */ './views/Home.vue') 
+  }
+  export default new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [
+      {
+        path: '/',
+        name: 'home',
+        component: About
+      }
+    ]
+  })
+  ```
+  위와같이 변수로 관리할수도 있다.
+- #### `webpackPrefetch`: 브라우저가 청크를 미리 로드하도록 지시하여, 페이지 전환 시의 성능을 향상시킨다.(캐싱)
+
