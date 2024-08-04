@@ -17,16 +17,30 @@
           </v-list-tile-content>
         </v-list-tile>
         <v-list-tile router :to="{name:'about'}" exact>
-        <!-- <router-link :to="{name:'about'}" exact> <v-list-tile> -->
-        <!-- <v-list-tile to="/about"> -->
-          <v-list-tile-action>
-            <i class="fas fa-user"></i>
-          </v-list-tile-action>
+          <!-- <router-link :to="{name:'about'}" exact> <v-list-tile> -->
+            <!-- <v-list-tile to="/about"> -->
+              <v-list-tile-action>
+                <i class="fas fa-user"></i>
+              </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>About</v-list-tile-title>
           </v-list-tile-content>
         <!-- </v-list-tile> -->
         <!-- </v-list-tile> </router-link> -->
+        </v-list-tile>
+        <v-list-tile router :to="{
+            name: 'users', 
+            params: {
+              userId: 421312,
+              name: 'YooHyeokSchool'
+            }
+          }" exact>
+          <v-list-tile-action>
+            <i class="fas fa-user"></i>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Users</v-list-tile-title>
+          </v-list-tile-content>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
