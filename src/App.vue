@@ -17,7 +17,7 @@
           </v-list-tile-content>
         </v-list-tile>
         <v-list-tile router :to="{name:'about'}" exact>
-        <!-- <router-link :to="{name:'about' exact}"> <v-list-tile> -->
+        <!-- <router-link :to="{name:'about'}" exact> <v-list-tile> -->
         <!-- <v-list-tile to="/about"> -->
           <v-list-tile-action>
             <i class="fas fa-user"></i>
