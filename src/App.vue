@@ -6,7 +6,9 @@
       app
     >
       <v-list dense>
-        <v-list-tile>
+        <!-- 아래와 같이 $router 전역 변수를 통해 접근해서 경로를 변경하면, 동일한 경로에서 이동을 시도했을때 오류가 발생한다. -->
+        <!-- <v-list-tile @click="$router.push({name: 'home', path:'/', query:{}, params:{}, replace: true })"> -->
+        <v-list-tile router :to="{name: 'home' }" exact>
           <v-list-tile-action>
             <i class="fas fa-home"></i>
           </v-list-tile-action>
@@ -14,13 +16,17 @@
             <v-list-tile-title>Home</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile>
+        <v-list-tile router :to="{name:'about'}" exact>
+        <!-- <router-link :to="{name:'about' exact}"> <v-list-tile> -->
+        <!-- <v-list-tile to="/about"> -->
           <v-list-tile-action>
             <i class="fas fa-user"></i>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>About</v-list-tile-title>
           </v-list-tile-content>
+        <!-- </v-list-tile> -->
+        <!-- </v-list-tile> </router-link> -->
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
