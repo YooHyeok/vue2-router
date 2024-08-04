@@ -184,3 +184,24 @@ active활성화 관련 옵션으로, 링크를 완전일치 모드로 강제하�
   </div>
 <template>
 ```
+
+# history 모드
+뷰 프로젝트 생성시 개발환경 설정에서 router 추가 후 history mode 설정을 YES로 적용하면 기본 세팅으로 적용된다.
+history mode를 적용하지 않은 기본모드는 Hash이며 주소창에 /#/ 기호가 들어간다.
+
+```js
+import Vue from 'vue'
+import Router from 'vue-router'
+import Home from './views/Home.vue'
+
+Vue.use(Router)
+
+export default new Router({
+  mode: 'history', //history 모드
+  base: process.env.BASE_URL,
+  routes: [
+    // 생략
+  ]
+})
+
+```
