@@ -118,3 +118,69 @@ router.js파일에 `which is lazy-loaded when the route is visited.`라는 주�
   위와같이 변수로 관리할수도 있다.
 - #### `webpackPrefetch`: 브라우저가 청크를 미리 로드하도록 지시하여, 페이지 전환 시의 성능을 향상시킨다.(캐싱)
 
+# $router
+
+router의 전역 instance이다. (main.js에서 최(초)상위 Vue인스턴스에 매개변수로 담아줌.)  
+push함수를 사용하여 경로를 변경할 수 있게 된다.
+```vue
+<template>
+  <div>
+    <span @click="$router.push({name:'home'})">
+      <h1>홈으로</h1>
+    </sapn>
+  </div>
+<template>
+```
+
+그러나 위와같은 방식으로 사용한다면, 현재 페이지가 home인 경우에 home으로 이동하려고 시도하면 오류가 발생한다.  
+Router에서는 router-link라는 template 내에 페이지를 전환할수 있는 기능을 제공해준다.
+
+# router-link
+
+`<a></a>` 즉, Anchor태그와 비슷한 기능으로 router에서는 url path에 따라 컴포넌트를 교체하기 위해 `<router-link>` 라는 태그를 사용해야 한다.
+
+```vue
+<template>
+  <div>
+    <router-link :to="{name:'home'}">
+      <h1>홈으로</h1>
+    </router-link>
+  </div>
+<template>
+```
+
+### vuetify에서의 router
+vuetify에서는 특정 태그에서 router-link를 사용할 수 있다.
+1. Buttons
+    ```html
+    <v-btn :to="{ name: 'home' }">Home</v-btn>
+    ```
+2. Navigation
+    ```html
+    <v-list-item :to="{ name: 'home' }">Home</v-list-item>
+    ```
+3. Tabs
+    ```html
+    <v-tab :to="{ name: 'home' }">Home</v-tab>
+    ```
+4. Breadcrumbs  
+    ```html
+    <v-breadcrumbs-item :to="{ name: 'home' }">Home</v-breadcrumbs-item>
+    ```
+
+## exact 속성
+active활성화 관련 옵션으로, 링크를 완전일치 모드로 강제하는 옵션이다.  
+예를들어 / path로 이동하였으나 /about path가 설정된 router-link도 active 활성화되기 때문에 두 태그에 모두 파란불이 들어온다.  
+이는 /about이 /를 포함하고 있기 때문이며, exact 옵션을 사용하면 정확한 path경로를 구분하게 된다.
+```vue
+<template>
+  <div>
+    <v-list-item router :to="{name:'home'}" exact> <!-- path:/ -->
+      <h1>홈으로</h1>
+    </v-list-item>
+    <v-list-item router :to="{name:'about'}" exact> <!-- path:/about -->
+      <h1>상세페이지</h1>
+    </v-list-item>
+  </div>
+<template>
+```
