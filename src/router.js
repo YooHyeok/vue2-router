@@ -7,6 +7,7 @@ Vue.use(Router)
 const About = () => {
   return import(/* webpackChunkName: "about" */ './views/About.vue')
 }
+const Users = () => import(/* webpackChunkName: "users" */ './views/Users.vue')
 
 export default new Router({
   mode: 'history',
@@ -25,6 +26,11 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       // component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
       component: About
+    },
+    {
+      path: '/users/:userId/:name',
+      name: 'users',
+      component: Users
     }
   ]
 })
