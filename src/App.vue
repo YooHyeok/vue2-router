@@ -33,6 +33,10 @@
             params: {
               userId: 421312,
               name: 'YooHyeokSchool'
+            },
+            query: {
+              group: 'member',
+              category: 'trial'
             }
           }" exact>
           <v-list-tile-action>
