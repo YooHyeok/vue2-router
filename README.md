@@ -307,3 +307,84 @@ router-link에서 params 객체에 추가한다면 만약 router 인스턴스에
 
 
 ## QueryString
+  - #### query 속성 추가
+    ```vue
+    <template>
+      <v-list-tile router :to="{
+            name: 'users', 
+            params: {
+              userId: 421312,
+              name: 'YooHyeokSchool'
+            },
+            query: {
+              group: 'member',
+              category: 'trial'
+            }
+          }" exact>
+    </template>
+    ```
+    `http://localhost:8080/users/421312/YooHyeokSchool?group=member&category=trial`  
+    ? 물음표뒤에 query에 사용된 property key와 value값이 ?key=value 형태로 붙고  
+    복수의 경우에는 &로 구분한다.
+
+  - #### Users.vue  
+    아래와 같이 해당 router의 route에 등록된 URL을 매핑시킨 컴포넌트에서 $route전역 객체로부터 query속성을 통해 각 property에 접근할 수 있다.
+    ```vue
+    <template>
+      <div>
+        <h1>Users</h1>
+        <p>파라미터.userId: {{ userId }}</p>
+        <p>파라미터.name: {{ $route.params.name }}</p>
+        <p>쿼리.group: {{ $route.query.group }}</p>
+        <p>쿼리.category: {{ $route.query.category }}</p>
+      </div>
+    </template>
+    <script>
+    export default {
+      computed: {
+        userId() {
+          return this.$route.params.userId
+        }
+      },
+      created() {
+        console.log('router', this.$router)
+        console.log('route', this.$route)
+      }
+    }
+    </script>
+    ```
+
+
+
+### 만약 아래와 같이 전혀 다른 형태의 query를 입력한 경우  
+`http://localhost:8080/users/421312/YooHyeokSchool?name=yooHyeok&address=korea`
+
+```vue
+<template>
+  <div>
+    <h1>Users</h1>
+    <p>파라미터.userId: {{ userId }}</p>
+    <p>파라미터.name: {{ $route.params.name }}</p>
+    <p>쿼리.group: {{ $route.query.group }}</p>
+    <p>쿼리.category: {{ $route.query.category }}</p>
+    <p>쿼리.name: {{ $route.query.name }}</p>
+    <p>쿼리.address: {{ $route.query.address }}</p>
+  </div>
+</template>
+<script>
+export default {
+  computed: {
+    userId() {
+      return this.$route.params.userId
+    }
+  },
+  created() {
+    console.log('router', this.$router)
+    console.log('route', this.$route)
+  }
+}
+</script>
+```
+오류는 발생하지 않으며 단, query.name과 query.address만 출력되고 query.group과 query.category는 출력되지 않는다.
+
+### *QueryString의 경우 주소창에 직접 key와 value를 노출하여 자유롭게 지정할수 있기 때문에 조금 더 직관적이고 편리할 수 있는 반면, parameter의 경우 어떠한 key(property)에 매핑된 value인지 알수 없기 때문에 보안상 더 좋다는 장점이 있다.*
