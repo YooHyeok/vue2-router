@@ -8,6 +8,8 @@ const About = () => {
   return import(/* webpackChunkName: "about" */ './views/About.vue')
 }
 const Users = () => import(/* webpackChunkName: "users" */ './views/Users.vue')
+const Members = () => import(/* webpackChunkName: "members" */ './views/Member.vue')
+const MembersDetail = () => import(/* webpackChunkName: "members-detail" */ './views/MemberDetail.vue')
 
 export default new Router({
   mode: 'history',
@@ -31,6 +33,18 @@ export default new Router({
       path: '/users/:userId/:name',
       name: 'users',
       component: Users
+    },
+    {
+      path: '/members',
+      name: 'members',
+      component: Members,
+      children: [
+        {
+          path: ':memberId',
+          name: 'members-detail',
+          component: MembersDetail
+        }
+      ]
     }
   ]
 })
