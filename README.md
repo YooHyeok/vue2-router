@@ -388,3 +388,126 @@ export default {
 오류는 발생하지 않으며 단, query.name과 query.address만 출력되고 query.group과 query.category는 출력되지 않는다.
 
 ### *QueryString의 경우 주소창에 직접 key와 value를 노출하여 자유롭게 지정할수 있기 때문에 조금 더 직관적이고 편리할 수 있는 반면, parameter의 경우 어떠한 key(property)에 매핑된 value인지 알수 없기 때문에 보안상 더 좋다는 장점이 있다.*
+
+
+# *Children*
+
+상위 컴포넌트 기준 하위 컴포넌트를 구성한다.  
+해당 컴포넌트들은 상위 컴포넌트에서 `<router-view/>` 태그를 통해 출력할 수 있게 된다.
+
+- **`router.js`**
+  ```js
+  import Vue from 'vue'
+  import Router from 'vue-router'
+  import Home from './views/Home.vue'
+
+  Vue.use(Router)
+
+  const Members = () => import(/* webpackChunkName: "members" */ './views/Member.vue')
+  const MembersDetail = () => import(/* webpackChunkName: "members-detail" */ './views/MemberDetail.vue')
+  const MembersEdit = () => import(/* webpackChunkName: "members-detail" */ './views/MemberEdit.vue')
+
+  export default new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [
+      {
+        path: '/',
+        name: 'home',
+        component: Home
+      },
+      {
+        path: '/members',
+        name: 'members',
+        component: Members,
+        children: [
+          {
+            path: ':memberId',
+            name: 'members-detail',
+            component: MembersDetail
+          },
+          {
+            path: ':memberId/edit',
+            name: 'members-edit',
+            component: MembersEdit
+          },
+        ]
+      }
+    ]
+  })
+  ```
+
+  #### *Chlildren은 자동으로 /가 붙는다. 만약 /를 붙힌다면 부모경로와 무관하게 독립적으로 동작한다.*
+
+- **`Member.vue`**
+  ```vue
+  <template>
+    <v-layout
+      row wrap pt-5 text-xs-center
+      style="max-width: 500px; margin: 0 auto">
+      <v-flex xs12>
+        <h1>Members</h1>
+        <p>회원을 검색해주세요.</p>
+      </v-flex>
+      <v-flex xs12>
+        <router-view><!-- /members의 하위경로(MemberDetail.vue)를 출력 --></router-view>
+      </v-flex>
+    </v-layout>
+  </template>
+  ```
+
+- **`MemberDetai.vue`**
+  ```vue
+  <template>
+    <div>
+      <h1>아이디 {{ memberId }} 회원 상세정보</h1>
+      <v-btn @click="edit">수정</v-btn>
+    </div>
+  </template>
+  <script>
+  export default {
+    computed: {
+      memberId() {
+        return this.$route.params.memberId
+      }
+    }
+  }
+  </script>
+
+  ```
+
+## Partent → Children 경로변경 유형
+
+- **`MemberDetai.vue`**  
+
+  ```vue
+  <template>
+    <div>
+      <h1>아이디 {{ memberId }} 회원 상세정보</h1>
+      <v-btn @click="edit">수정</v-btn>
+    </div>
+  </template>
+  <script>
+  export default {
+    computed: {
+      memberId() {
+        return this.$route.params.memberId
+      }
+    },
+    methods: {
+      edit() {
+        this.$router.push({name: 'members-edit'}) // 1. 동등한 Children 계층이라면 parameter가 자동으로 넘어간다.
+        this.$router.push({path: `/members/${this.memberId}/edit`}) // 2. `/`포함 풀 path 입력
+        this.$router.push({path: `${this.memberId}/edit`}) // 3. `/` 생략 - 
+      }
+    }
+  }
+  </script>
+  ```
+  1. name속성으로 탐색한다면 현재 URL기준 parameter를 자동으로 해당 이름의 컴포넌트에 매핑시킨다.
+  2. 만약 풀 path로 입력할때 가장처음 /를 생략한다면 Children에서 찾게된다.
+  3. /를 생략했기 때문에 현재 컴포넌트 기준으로 Children에서 탐색한다.
+
+
+      
+      
