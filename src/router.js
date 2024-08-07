@@ -10,6 +10,7 @@ const About = () => {
 const Users = () => import(/* webpackChunkName: "users" */ './views/Users.vue')
 const Members = () => import(/* webpackChunkName: "members" */ './views/Member.vue')
 const MembersDetail = () => import(/* webpackChunkName: "members-detail" */ './views/MemberDetail.vue')
+const MembersEdit = () => import(/* webpackChunkName: "members-detail" */ './views/MemberEdit.vue')
 
 export default new Router({
   mode: 'history',
@@ -43,7 +44,12 @@ export default new Router({
           path: ':memberId',
           name: 'members-detail',
           component: MembersDetail
-        }
+        },
+        {
+          path: ':memberId/edit',
+          name: 'members-edit',
+          component: MembersEdit
+        },
       ]
     }
   ]
