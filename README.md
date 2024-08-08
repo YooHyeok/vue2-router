@@ -508,6 +508,114 @@ export default {
   2. 만약 풀 path로 입력할때 가장처음 /를 생략한다면 Children에서 찾게된다.
   3. /를 생략했기 때문에 현재 컴포넌트 기준으로 Children에서 탐색한다.
 
+# *Router Guard*
+일반적으로 가드란 어떠한것을 지킨다는 의미이다.  
+예를들어 로그인을 하지 않은 회원이 있다면 해당 회원은 마이페이지에 접근할 수 없다.  
+혹은 이미 로그인 한 회원이 로그인 페이지에 접근하려고 할 때 페이지 접근을 막아야 한다.  
+이와 같이 조건에 따라 라우터를 허가할 것인지에 대한 동작 여부등의 역할을 할 수 있다.
 
+## beforeEnter()
+router guard는 router 객체 내에 guard에 사용되는 몇가지 속성을 통해 만들어 줄 수 있다.  
+그중 beforeEnter 라는속성은 router가 불러와지기 전에 선언한 익명 함수가 먼저 동작하게 해준다.
+ - `to` : 라우터가 가는 방향 **(about)**  
+   콘솔: `{path: "/about", name: "about", params: {}, query: {}, meta: {}, matched: [], hash: "", fullPath: "/about"}`
+ - `from` : 어디로 부터 라우터에 왔는지 **(home)**  
+   콘솔: `{path: "/", name: "home", params: {}, query: {}, meta: {}, matched: [], hash: "", fullPath: "/"}`
+ - `next` : 함수 실행 후 router를 어디로 갈지 결정해주는 기능
+
+예시 코드는 아래와 같다
+
+- ### router.js
+  ```js
+  import Vue from 'vue'
+  import Router from 'vue-router'
+  import Home from './views/Home.vue'
+
+  Vue.use(Router)
+
+  export default new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [
+      {
+        path: '/',
+        name: 'home',
+        component: Home
+        beforeEnter: (to, from, next) => {
+          console.log('to: ', to, ' \nfrom: ', from)
+        },
+      },
+    ]
+  })
+  ```
+
+
+
+
+## next()
+router가 진행할 방향을 의미한다.
+
+```js
+
+beforeEnter: (to, from, next) => {
+  next(); // default는 to 로 이동된다.
+}
+
+```
+만약 위와같이 아무런 값도 부여하지 않는다면, to 객체로 이동하게 된다.
+
+```js
+beforeEnter: (to, from, next) => {
+  next("/"); // home 컴포넌트로 이동하게 된다.
+}
+```
+예를들어 /about이라는 router를 입력했을 때 about route의 beforeEnter에서 next("/")를 선언해뒀다면 /about 경로로 이동하지 않고 / 경로로 빠지게 된다.
       
-      
+이를 응용하면 아래와 같은 로그인 여부에 따른 라우팅 분기 코드를 작성할 수 있게 된다.      
+```js
+
+beforeEnter: (to, from, next) => {
+  /* 로그인 여부 확인 후 이동시키기. */
+  const isUserLogin = false;
+  if(isUserLogin === false) {
+    next('home')
+  } else {
+    next('members-detail');
+  }
+}
+
+```
+
+## 컴포넌트 내에서 Router Guard 동작
+
+ - `beforeRouterEnter()` : 컴포넌트 생성 전인(**created**) 초기 진입 시점에 호출된다.   
+ (router.js에 선언한 *beforeEnter 이후 호출됨*)
+ - `beforeRouterLeave()` : 컴포넌트 소멸 전인(**destroyed**) 최종 소멸 시점에 호출된다.
+
+- User.vue
+  ```vue
+  <script>
+  export default {
+    beforeRouteEnter(to, from, next) {
+      console.log("before Route Enter")
+      next();
+    },
+    beforeRouteLeave(to, from, next) {
+      console.log("before Route Leave")
+      next();
+    },
+    created() {
+      console.log("created")
+    },
+    destroyed() {
+      console.log("destroyed")
+    }
+  }
+  </script>
+  ```
+  ### 호출 순서
+  1. beforeEnter (router.js)
+  2. beforeRouteEnter (컴포넌트)
+  3. created (컴포넌트)
+  4. beforeRouteLeave (컴포넌트)
+  4. destroyed (컴포넌트)
