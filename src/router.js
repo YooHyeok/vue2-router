@@ -38,6 +38,28 @@ export default new Router({
     {
       path: '/members',
       name: 'members',
+      /**
+       * router guard
+       * router 객체 내에 guard에 사용되는 몇가지 속성을 통해 만들어 줄 수 있다.
+       * beforeEnter : router가 불러와지기 전에 먼저 동작한다.
+       * @param {*} to : 라우터가 가는 방향
+       * @param {*} from : 어디로 부터 라우터에 왔는지
+       * @param {*} next : 함수 실행 후 router를 어디로 갈지 결정해주는 기능
+       */
+      beforeEnter: (to, from, next) => {
+        // console.log('to: ', to, ' \nfrom: ', from)
+        console.log('beforeEnter')
+        next(); // default는 to 로 이동된다.
+        // next("/"); // default는 to 로 이동된다.
+        
+        /* 로그인 여부 확인 후 이동시키기. */
+        // const isUserLogin = false;
+        // if(isUserLogin === false) {
+        //   next('home')
+        // } else {
+        //   next('members-detail');
+        // }
+      },
       component: Members,
       children: [
         {
