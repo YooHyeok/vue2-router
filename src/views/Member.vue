@@ -30,6 +30,20 @@ export default {
     return {
       memberId: null
     }
+  },
+  beforeRouteEnter(to, from, next) {
+    console.log("before Route Enter")
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    console.log("before Route Leave")
+    next();
+  },
+  created() {
+    console.log("created")
+  },
+  destroyed() {
+    console.log("destroyed")
   }
 }
 </script>
