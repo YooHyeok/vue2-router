@@ -72,7 +72,20 @@ export default new Router({
           name: 'members-edit',
           component: MembersEdit
         },
+        {
+          path: ':memberId/edit/*',
+          redirect: {name: 'home'}
+        }
       ]
+    },
+    {
+      path: '/redirect-me',
+      // redirect: '/users',
+      redirect: {name: 'users'} // router-link의  to: {name: 'users'}와 같은 형태로도 사용 가능하다.
+    },
+    {
+      path: '/*', //router에 선언된 모든 path중 어떠한것도 해당되지 않는다면 이곳으로 redirect된다.
+      redirect: {name: 'about'}
     }
   ]
 })
