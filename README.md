@@ -619,3 +619,89 @@ beforeEnter: (to, from, next) => {
   3. created (컴포넌트)
   4. beforeRouteLeave (컴포넌트)
   4. destroyed (컴포넌트)
+
+# *Redirection*
+  사용자가 라우터에 등록되어있지 않은 예상치 못한 주소로 접근했을 때 빈 컴포넌트 출력이 아닌 원하는 컴포넌트로 redirect 시켜준다.  
+
+  문법은 등록할 route 객체 내 redirect 속성을 사용한다.
+- router.js
+  ```js
+  import Vue from 'vue'
+  import Router from 'vue-router'
+  import Home from './views/Home.vue'
+
+  Vue.use(Router)
+
+  export default new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [
+      {
+        path: '/',
+        name: 'home',
+        component: Home
+      },
+      {
+        path: '/redirect-me',
+        // redirect: '/',
+        redirect: {name: 'home'} // router-link의  to: {name: 'home'}와 같은 형태로도 사용 가능하다.
+      }
+    ]
+  })
+  ```
+  위 코드는 만약 /redirec-me라는 path요청이 오게된다면 home route로 redirect 처리 한다.
+
+  만약 존재하지 않는 특정 path에 접근하였을 경우 redirect 처리를 하는 방법은 아래와 같다.
+- router.js
+  ```js
+  import Vue from 'vue'
+  import Router from 'vue-router'
+  import Home from './views/Home.vue'
+
+  Vue.use(Router)
+
+  export default new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes: [
+      {
+        path: '/',
+        name: 'home',
+        component: Home
+      },
+      {
+        path: '/*',
+        redirect: {name: 'home'}
+      }
+    ]
+  })
+  ```
+  /뒤에 *`asterisk`* 기호를 붙히면 router에 선언된 모든 path중 어떠한것도 해당되지 않는다면 이곳으로 redirect된다.
+
+## *Children redirect* 
+만약 /member/*이라면  /member의 children중 어떠한것도 해당되지 않는다면 children에 등록한 redirect가 동작하게된다.
+- router.js
+  ```js
+  {
+      path: '/members',
+      name: 'members',
+      component: Members,
+      children: [
+        {
+          path: ':memberId',
+          name: 'members-detail',
+          component: MembersDetail
+        },
+        {
+          path: ':memberId/edit',
+          name: 'members-edit',
+          component: MembersEdit
+        },
+        {
+          path: ':memberId/edit/*',
+          redirect: {name: 'home'}
+        }
+  }
+  ```
+  이를테면 위의 코드와 같이 /members/:memberId/edit/바보 라는 path입력시 home 라우트로 redirect되어 home컴포넌트가 라우팅된다.
+
