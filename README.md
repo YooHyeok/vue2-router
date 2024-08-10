@@ -621,7 +621,7 @@ beforeEnter: (to, from, next) => {
   4. destroyed (컴포넌트)
 
 # *Redirection*
-  사용자가 라우터에 등록되어있지 않은 예상치 못한 주소로 접근했을 때 빈 컴포넌트 출력이 아닌 원하는 컴포넌트로 redirect 시켜준다.  
+  사용자가 라우터에 등록되어있지 않은 예상치 못한 주소로 접근했을 때 빈 컴포넌트 출력이 아닌 지정한 route로 redirect 한다.  
 
   문법은 등록할 route 객체 내 redirect 속성을 사용한다.
 - router.js
